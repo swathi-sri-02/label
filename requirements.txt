@@ -7,3 +7,4 @@ pytesseract
 pandas
 numpy
 streamlit-cropper
+setuptools
