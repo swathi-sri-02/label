@@ -1,6 +1,7 @@
 streamlit
 pdf2image
 paddleocr
+paddlepaddle
 Pillow
 pytesseract
 pandas
