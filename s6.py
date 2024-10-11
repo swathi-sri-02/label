@@ -17,6 +17,12 @@ if not os.path.exists("Circuit"):
 if not os.path.exists("Label"):
     os.makedirs("Label")
 
+# Set environment variable to force PaddlePaddle to use CPU only
+os.environ['CUDA_VISIBLE_DEVICES'] = ''
+
+# Check if PaddlePaddle is using GPU or CPU
+gpu_available = paddle.device.is_compiled_with_cuda()
+
 # Initialize session state for view mode and selected page
 if 'view_mode' not in st.session_state:
     st.session_state.view_mode = 'PDF Viewer'
