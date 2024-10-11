@@ -1,0 +1,15 @@
+version: "3.4"
+
+services:
+  app:
+    build: .
+    image: app:latest
+    restart: always
+    ports:
+      - "8000:8000"
+    networks:
+      - OCR-app
+    container_name: OCR-app
+networks:
+  OCR-app:
+    driver: bridge

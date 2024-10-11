@@ -1,6 +1,7 @@
 import streamlit as st
 from pdf2image import convert_from_bytes
 from paddleocr import PaddleOCR
+import paddle
 from PIL import Image
 import pytesseract
 import re
@@ -33,7 +34,8 @@ if 'uploaded_pdf' not in st.session_state:
 
 # Sidebar: Tool selection and folder image display
 st.sidebar.title("Select Tool")
-tool_option = st.sidebar.radio("Choose a tool", ["PDF Cropping Tool", "Comparison Page"])
+tool_option = st.sidebar.radio(
+    "Choose a tool", ["PDF Cropping Tool", "Comparison Page"])
 
 # st.sidebar.subheader("Circuit Folder")
 # circuit_images = sorted(glob.glob("Circuit/*.png"))
@@ -65,11 +67,12 @@ for img_path in label_images:
     if st.sidebar.button(f"Select {os.path.basename(img_path)}", key=f"label_{img_path}"):
         st.session_state["selected_label_image"] = img_path
 
+
 def extract_text_from_image(image_path):
     # Open the image file directly using the path
     image = Image.open(image_path)
     image_np = np.array(image)
-    
+
     ocr = PaddleOCR(
         use_angle_cls=True,  # Enable angle classification to detect rotated text
         det_db_thresh=0.5,  # Adjusted threshold for detection
@@ -103,10 +106,10 @@ def extract_and_sort_components(image_path):
     # # Define a regex pattern to match component codes and descriptions
     # pattern = re.compile(r'([A-Z$]\d+(?:-\d+)?)\s*[-—]\s*(.+?)(?=\s*[A-Z$]\d+[-—]|\s*$)', re.DOTALL)
 
-    #This gives the 1 2 3
+    # This gives the 1 2 3
     pattern = re.compile(
-    r'(\b[123]\b|[A-Z$]\d+(?:-\d+)?)\s*[-—]\s*(.+?)(?=\s*(?:\b[123]\b|[A-Z$]\d+[-—]|\s*$))',
-    re.DOTALL
+        r'(\b[123]\b|[A-Z$]\d+(?:-\d+)?)\s*[-—]\s*(.+?)(?=\s*(?:\b[123]\b|[A-Z$]\d+[-—]|\s*$))',
+        re.DOTALL
     )
 
     # Find all matches
@@ -122,9 +125,11 @@ def extract_and_sort_components(image_path):
         cleaned_matches.append((code, description))
 
     # Sort the matches
-    sorted_matches = sorted(cleaned_matches, key=lambda x: (x[0][0], int(re.findall(r'\d+', x[0])[0])))
+    sorted_matches = sorted(cleaned_matches, key=lambda x: (
+        x[0][0], int(re.findall(r'\d+', x[0])[0])))
 
     return sorted_matches
+
 
 def compare_components(circuit_texts, sorted_components):
     missing_components = []
@@ -136,19 +141,21 @@ def compare_components(circuit_texts, sorted_components):
 
 def save_to_excel(circuit_texts, sorted_components, missing_components):
     # Your existing save_to_excel function, modified to return a BytesIO object
-    max_len = max(len(circuit_texts), len(sorted_components), len(missing_components))
+    max_len = max(len(circuit_texts), len(
+        sorted_components), len(missing_components))
     circuit_texts += [''] * (max_len - len(circuit_texts))
-    sorted_components += [('','')] * (max_len - len(sorted_components))
+    sorted_components += [('', '')] * (max_len - len(sorted_components))
     missing_components += [''] * (max_len - len(missing_components))
 
     circuit_labels = pd.Series(circuit_texts, name='Circuit Labels')
-    component_labels = pd.Series([f"{code} - {desc}" for code, desc in sorted_components], name='Component Labels')
+    component_labels = pd.Series(
+        [f"{code} - {desc}" for code, desc in sorted_components], name='Component Labels')
     missing_labels = pd.Series(missing_components, name='Missing Labels')
 
     df = pd.DataFrame({
         'Circuit Labels': circuit_labels,
         'Component Labels': component_labels,
-        'Missing Labels' : missing_labels
+        'Missing Labels': missing_labels
     })
 
     output = io.BytesIO()
@@ -184,18 +191,21 @@ if tool_option == "PDF Cropping Tool":
                         st.session_state.selected_page = i
                         st.session_state.view_mode = 'Cropping Tool'  # Switch to cropping mode
                 with col2:
-                    st.image(page_image, caption=f"Page {i + 1}", use_column_width=True)
+                    st.image(page_image, caption=f"Page {
+                             i + 1}", use_column_width=True)
 
         # Cropping Tool Mode
         elif st.session_state.view_mode == 'Cropping Tool' and st.session_state.selected_page is not None:
             selected_page = st.session_state.selected_page
             st.subheader(f"Cropping Tool - Page {selected_page + 1}")
             st.write("Select area to crop:")
-            cropped_image = st_cropper(pages[selected_page], realtime_update=True, box_color="blue", aspect_ratio=None)
+            cropped_image = st_cropper(
+                pages[selected_page], realtime_update=True, box_color="blue", aspect_ratio=None)
 
             # Display cropped image preview and save options
             if cropped_image:
-                st.image(cropped_image, caption="Cropped Image Preview", use_column_width=True)
+                st.image(cropped_image, caption="Cropped Image Preview",
+                         use_column_width=True)
 
                 # Save options
                 save_as = st.selectbox("Save as", ["Circuit", "Label"])
@@ -230,14 +240,16 @@ elif tool_option == "Comparison Page":
     # Display the selected Circuit image
     if st.session_state["selected_circuit_image"]:
         st.write("Circuit Image:")
-        st.image(st.session_state["selected_circuit_image"], use_column_width=True)
+        st.image(
+            st.session_state["selected_circuit_image"], use_column_width=True)
     else:
         st.write("No Circuit image selected.")
 
     # Display the selected Label image
     if st.session_state["selected_label_image"]:
         st.write("Label Image:")
-        st.image(st.session_state["selected_label_image"], use_column_width=True)
+        st.image(
+            st.session_state["selected_label_image"], use_column_width=True)
     else:
         st.write("No Label image selected.")
 
@@ -246,27 +258,33 @@ elif tool_option == "Comparison Page":
         if st.button("Analyze Images"):
             with st.spinner("Processing images..."):
                 # Extract text from the circuit image
-                circuit_texts = extract_text_from_image(st.session_state["selected_circuit_image"])
+                circuit_texts = extract_text_from_image(
+                    st.session_state["selected_circuit_image"])
 
                 # Extract and sort components from the component image
-                sorted_components = extract_and_sort_components(st.session_state["selected_label_image"])
+                sorted_components = extract_and_sort_components(
+                    st.session_state["selected_label_image"])
 
                 # Compare components
-                missing_components = compare_components(circuit_texts, sorted_components)
+                missing_components = compare_components(
+                    circuit_texts, sorted_components)
 
                 # Display results
                 st.subheader("Results")
                 st.write("Circuit Components:", circuit_texts)
-                st.write("Label Components:", [f"{code} - {desc}" for code, desc in sorted_components])
-                
+                st.write("Label Components:", [
+                         f"{code} - {desc}" for code, desc in sorted_components])
+
                 if missing_components:
                     st.write("Missing Components:", missing_components)
                 else:
                     st.write("All components are present in the circuit image.")
 
                 # Generate Excel file
-                excel_file = save_to_excel(circuit_texts, sorted_components, missing_components)
-                excel_filename = f"{os.path.basename(st.session_state['selected_circuit_image'])}__{os.path.basename(st.session_state['selected_label_image'])}.xlsx"
+                excel_file = save_to_excel(
+                    circuit_texts, sorted_components, missing_components)
+                excel_filename = f"{os.path.basename(st.session_state['selected_circuit_image'])}__{
+                    os.path.basename(st.session_state['selected_label_image'])}.xlsx"
 
                 # Provide download link
                 st.download_button(
