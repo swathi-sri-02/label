@@ -7,9 +7,8 @@ RUN apt-get update && \
     libglib2.0-0 \
     libglib2.0-dev \
     libopencv-dev \
-    libgthread-2.0-0 \
     && apt-get clean
-
+	
 RUN apt-get -y install build-essential python3-dev
 RUN apt-get update && apt-get install -y libgl1-mesa-glx
 
