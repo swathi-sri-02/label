@@ -283,8 +283,8 @@ elif tool_option == "Comparison Page":
                 # Generate Excel file
                 excel_file = save_to_excel(
                     circuit_texts, sorted_components, missing_components)
-                excel_filename = f"{os.path.basename(st.session_state['selected_circuit_image'])}__{
-                    os.path.basename(st.session_state['selected_label_image'])}.xlsx"
+                excel_filename = f'''{os.path.basename(st.session_state['selected_circuit_image'])}__{
+                    os.path.basename(st.session_state['selected_label_image'])}.xlsx'''
 
                 # Provide download link
                 st.download_button(
