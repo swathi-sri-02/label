@@ -11,6 +11,8 @@ RUN apt-get update && \
 	
 RUN apt-get -y install build-essential python3-dev
 RUN apt-get update && apt-get install -y libgl1-mesa-glx
+RUN apt-get install libpoppler-glib-dev
+
 
 RUN apt-get install -y python3 python3-pip
 RUN pip3 install streamlit paddleocr opencv-python
