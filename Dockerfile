@@ -3,6 +3,7 @@ FROM python:3.11-slim
 RUN apt-get update --fix-missing
 
 RUN apt-get -y install build-essential python3-dev
+RUN apt-get update && apt-get install -y libgl1-mesa-glx
 
 WORKDIR /code
 
