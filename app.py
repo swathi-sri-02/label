@@ -1,15 +1,15 @@
+import os
+import io
+import re
+import glob
 import streamlit as st
 from pdf2image import convert_from_bytes
 from paddleocr import PaddleOCR
 import paddle
 from PIL import Image
 import pytesseract
-import re
 import pandas as pd
-import io
 import numpy as np
-import os
-import glob
 from streamlit_cropper import st_cropper
 
 # Set up folders
