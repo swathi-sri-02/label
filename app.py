@@ -191,8 +191,8 @@ if tool_option == "PDF Cropping Tool":
                         st.session_state.selected_page = i
                         st.session_state.view_mode = 'Cropping Tool'  # Switch to cropping mode
                 with col2:
-                    st.image(page_image, caption=f"Page {
-                             i + 1}", use_column_width=True)
+                    st.image(page_image, caption=f'''Page {
+                             i + 1}''', use_column_width=True)
 
         # Cropping Tool Mode
         elif st.session_state.view_mode == 'Cropping Tool' and st.session_state.selected_page is not None:
