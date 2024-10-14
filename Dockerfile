@@ -12,6 +12,7 @@ RUN apt-get update && \
 RUN apt-get -y install build-essential python3-dev
 RUN apt-get update && apt-get install -y libgl1-mesa-glx
 RUN apt-get install poppler-utils
+RUN apt install tesseract-ocr
 
 
 RUN apt-get install -y python3 python3-pip
