@@ -19,7 +19,7 @@ RUN pip3 install streamlit paddleocr opencv-python
 # Update and install necessary packages
 RUN apt-get update && apt-get install -y \
     tesseract-ocr \
-    libtesseract-dev \
+    libtesseract-dev 
 
 WORKDIR /code
 
